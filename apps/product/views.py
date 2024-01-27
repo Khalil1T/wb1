@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from rest_framework import permissions, status
 from rest_framework import generics
 from rest_framework.views import APIView
@@ -13,6 +14,12 @@ class ProductListAPIView(generics.ListAPIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
+
+class ProductDetailAPIView(generics.RetrieveAPIView):
+    permission_classes = [permissions.AllowAny]
+    serializer_class = ProductSerializer
+    queryset = Product.objects.all()
+    lookup_field = 'id'
 
 
 class ProductCreateAPIView(generics.CreateAPIView):
