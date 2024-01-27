@@ -5,8 +5,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from .models import Product, Category
-from apps.user.models import User
-from apps.user.serializers import UserSerializer
 from .serializers import ProductSerializer, CategorySerializer
 
 
@@ -20,6 +18,12 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
     lookup_field = 'id'
+
+class ProductUpdateAPIView(generics.RetrieveAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'id'
+
 
 
 class ProductCreateAPIView(generics.CreateAPIView):
