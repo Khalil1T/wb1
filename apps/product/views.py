@@ -1,8 +1,9 @@
-from django.shortcuts import render
 from rest_framework import permissions, status
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
 
 from .models import Product, Category
 from .serializers import ProductSerializer, CategorySerializer
@@ -19,12 +20,11 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     lookup_field = 'id'
 
-class ProductUpdateAPIView(generics.RetrieveAPIView):
+class ProductUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = Product.objects.all()
+    permission_classes = (IsAuthenticated,)
     serializer_class = ProductSerializer
-    lookup_field = 'id'
-
-
+    lookup_field = 'pk'
 
 class ProductCreateAPIView(generics.CreateAPIView):
     serializer_class = ProductSerializer
