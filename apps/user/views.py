@@ -36,3 +36,31 @@ class UserListAPIView(generics.ListCreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.AllowAny]
     queryset = User.objects.all()
+
+
+class BuyerRegisterView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            seller = User.objects.create(
+                email=request.data['email'],
+                name=request.data['name'],
+                second_name=request.data['second_name'],
+                phone=request.data['phone'],
+                address=request.data['address'],
+                is_Seller=False
+            )
+            seller.set_password(request.data['password'])
+            seller.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class BuyerListAPIView(generics.ListCreateAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        return User.objects.filter(is_Seller=False)

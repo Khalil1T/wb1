@@ -26,6 +26,13 @@ class ProductUpdateAPIView(generics.RetrieveUpdateAPIView):
     serializer_class = ProductSerializer
     lookup_field = 'pk'
 
+
+class ProductDeleteAPIView(generics.DestroyAPIView):
+    queryset = Product.objects.all()
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+
 class ProductCreateAPIView(generics.CreateAPIView):
     serializer_class = ProductSerializer
     permission_classes = [permissions.AllowAny]
