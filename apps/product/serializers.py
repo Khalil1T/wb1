@@ -1,53 +1,36 @@
-# from rest_framework import serializers
-# from .models import Product, Category
-# from apps.user.serializers import UserSerializer
-#
-#
-# class CategorySerializer(serializers.ModelSerializer):
-#
-#     class Meta:
-#         model = Category
-#         fields = "__all__"
-#
-#
-# class ProductSerializer(serializers.ModelSerializer):
-#     seller = UserSerializer()
-#     category = CategorySerializer()
-#
-#     class Meta:
-#         model = Product
-#         fields = "__all__"
-import logging
-
 from rest_framework import serializers
-from .models import Product
+from .models import Product, Category
+from apps.user.models import User
 from apps.user.serializers import UserSerializer
-from .models import Category
-
+from rest_framework import permissions, status
+from rest_framework import generics
+from rest_framework.views import APIView
+from rest_framework.response import Response
 class CategorySerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Category
-        fields = "__all__"
-
+        fields = ['id','name']
 class ProductSerializer(serializers.ModelSerializer):
-    seller = UserSerializer()
-    category = CategorySerializer()
-
+    serializer_user = UserSerializer
+    serializer_category = CategorySerializer
     class Meta:
         model = Product
         fields = "__all__"
 
-    def update(self, instance, validated_data):
-        logging.info(f'Trying to update product with data: {validated_data}')
 
-        validated_data.pop('seller', True)
-        validated_data.pop('category', None)
+class ProductSerializer_NotAll(serializers.ModelSerializer):
 
-        try:
-            # Perform the default update for other fields
-            result = super().update(instance, validated_data)
-            logging.info(f'Product updated successfully: {result}')
-            return result
-        except Exception as e:
-            logging.error(f'Error updating product: {e}')
-            raise serializers.ValidationError(f'Error updating product: {e}')
+    class Meta:
+        model = Product
+        fields = ['name','description','price','quantity']
+
+
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['name', 'email']
+class CombinedSerializer(serializers.Serializer):
+    product_data = ProductSerializer_NotAll(many=True)
+    category_data = CategorySerializer(many=True)
