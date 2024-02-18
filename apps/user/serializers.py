@@ -42,13 +42,11 @@ class UserSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(
         required=True
     )
-    is_Seller = serializers.CharField(
-        required=True
-    )
 
     class Meta:
         model = User
         fields = [
+            'id',
             'email',
             'name',
             'second_name',
@@ -56,7 +54,6 @@ class UserSerializer(serializers.ModelSerializer):
             'phone',
             'password',
             'password2',
-            'is_Seller'
         ]
 
     def validate(self, attrs):
@@ -65,4 +62,3 @@ class UserSerializer(serializers.ModelSerializer):
                 {'password': 'Password fields didn`t match'}
             )
         return attrs
-

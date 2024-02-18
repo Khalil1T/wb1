@@ -1,23 +1,35 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
-from .views import (CategoryListAPIView,
-                    ProductCreateAPIView,
-                    CategoryCreateAPIView,
-                    AllUserListAPIView,
-                    ProductListAPIView,
-                    ProductListDetailAPIView,
-                    ProductEditAPI,
-                    ProductViewSet)
+from .views import (
+    ProductListAPIView,
+    ProductCreateAPIView,
+    CategoryCreateAPIView,
+    CategoryListAPIView,
+    ProductDetailAPIView,
+    ProductUpdateAPIView,
+    ProductDeleteAPIView,
+    ProductViewSet,
+    ProductFilterListAPIView, BasketItemViewSet,
+)
 
-
+router = DefaultRouter()
+router.register(r'basket', BasketItemViewSet)
 
 urlpatterns = [
-    path('category/create/', CategoryCreateAPIView.as_view({'post': 'create'}), name='category-create'),
-    path('category/list/', CategoryListAPIView.as_view({'get': 'list'}), name='category-list'),
-    path('all/list/', AllUserListAPIView.as_view({'get': 'list'}), name='all-user-list'),
+    path('categories/', CategoryListAPIView.as_view(), name='category-list'),
+    path('category/create/', CategoryCreateAPIView.as_view(), name='category-create'),
+    path('', ProductListAPIView.as_view(), name='product-list'),
+    path('<int:pk>/', ProductDetailAPIView.as_view(), name='product-detail'),
     path('create/', ProductCreateAPIView.as_view(), name='product-create'),
-    path('list/', ProductViewSet.as_view({'get': 'list'}), name='product-list'),
-    path('detail/<int:pk>/', ProductViewSet.as_view({'get': 'retrieve'}), name='product-detail'),
-    path('edit/<int:pk>', ProductEditAPI.as_view({'patch': 'edit'}), name='product-edit'),
-    path('products/', ProductViewSet.as_view({'get': 'list'}), name='product-list'),
+    path('<int:pk>/', ProductUpdateAPIView.as_view(), name='product-update'),
+    path('<int:pk>/delete/', ProductDeleteAPIView.as_view(), name='product-delete'),
+    path('filter/', ProductFilterListAPIView.as_view(), name='product-filter'),
+    path('cart/', BasketItemViewSet.as_view(), name='product-BasketItemViewSet'),
+    path('', include(router.urls)),
+
+
 ]
+# router = DefaultRouter()
+# router.register(r'products', ProductViewSet)
+# urlpatterns = router.urls

@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+
+  db:
+    image: postgres:12.0-apline
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_DB=wb
+    volumes:
+      - postgres_data:var/lib/postgresql/data/
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '8000:8000'
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+
+
+volumes:
+  postgres_data:
+
